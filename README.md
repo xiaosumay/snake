@@ -1,180 +1,331 @@
-![](https://box.kancloud.cn/5a0aaa69a5ff42657b5c4715f3d49221) 
+# snake
+thinkphp5做的通用系统改后台
 
-ThinkPHP 5.1（LTS版本） —— 12载初心，你值得信赖的PHP框架
-===============
+目前完成的功能有:
 
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/top-think/framework/badges/quality-score.png?b=5.1)](https://scrutinizer-ci.com/g/top-think/framework/?branch=5.1)
-[![Build Status](https://travis-ci.org/top-think/framework.svg?branch=master)](https://travis-ci.org/top-think/framework)
-[![Total Downloads](https://poser.pugx.org/topthink/framework/downloads)](https://packagist.org/packages/topthink/framework)
-[![Latest Stable Version](https://poser.pugx.org/topthink/framework/v/stable)](https://packagist.org/packages/topthink/framework)
-[![PHP Version](https://img.shields.io/badge/php-%3E%3D5.6-8892BF.svg)](http://www.php.net/)
-[![License](https://poser.pugx.org/topthink/framework/license)](https://packagist.org/packages/topthink/framework)
+后台管理员的增删改查
 
-ThinkPHP5.1对底层架构做了进一步的改进，减少依赖，其主要特性包括：
+角色的增删改查
 
- + 采用容器统一管理对象
- + 支持Facade
- + 注解路由支持
- + 路由跨域请求支持
- + 配置和路由目录独立
- + 取消系统常量
- + 助手函数增强
- + 类库别名机制
- + 增加条件查询
- + 改进查询机制
- + 配置采用二级
- + 依赖注入完善
- + 支持`PSR-3`日志规范
- + 中间件支持（V5.1.6+）
- + Swoole/Workerman支持（V5.1.18+）
+权限的分配
+
+数据库的备份与还原
+
+#  QQ交流群
+## 159640205
+
+# 使用方法
+配置好虚拟域名，输入域名，点击下一步安装即可
+
+管理员是: admin
+密码是: admin
+
+可以自己进行修改  
+
+# 更新日志：  
+2016.10.12 19:34分,已经讲系统升级到了thinkphp5.0.1,若有发现问题，请积极反馈。谢谢  
+
+2017.7.19 对代码进行了重大修改  
+1、升级 thinkphp5 的版本到 5.0.10  
+2、添加了节点管理  
+3、优化了权限控制(能控制到所有的按钮)  
+4、改变了操作按钮的样式，并添加了生成按钮的方法  
+5、统一采用model去查询数据  
+
+2017.9.16 更新如下  
+1、添加了文章的 增删改查 更能   
+2、展示了图片异步上传和展示的功能  
+3、展示了 tags 插件的使用  
+4、展示了 ueditor和 tp5结合使用
+
+2017.9.18 更新如下  
+1、添加安装系统
+
+# 一些二开的指导 
+
+### 关于框架主要文件夹讲解  
+
+```
+|-- application     // 项目业务逻辑主要目录
+    |-- admin       // 后台所在目录
+       |-- controller       // 后台控制器
+       |-- model        // 后台模型
+       |-- validate         // 后台验证器
+       |-- view          // 后台视图
+       |-- common.php    // 后台公用方法
+       |-- config.php    // 后台项目配置
+       |-- database.php  // 后台数据库配置
+    |-- api     // 规划 api 目录
+    |-- index   // 前台所在目录
+        |-- controller       // 前台控制器
+        |-- model        // 前台模型
+        |-- validate         // 前台验证器
+        |-- view          // 前台视图
+        |-- common.php    // 前台公用方法
+        |-- config.php    // 前台项目配置
+        |-- database.php  // 前台数据库配置
+    |-- command.php     // console命令文件
+    |-- common.php      // 系统公用方法
+    |-- config.php      // 系统配置文件
+    |-- database.php    // 系统数据库文件
+    |-- route.php       // 系统路由文件
+|-- back    // sql备份文件目录
+|-- extend      // 自由扩展包目录 
+|-- public      // 系统入口、资源所在目录
+    |-- static      // 静态资源
+        |-- admin   // 后台资源目录
+```
+
+# 开发步骤
+1. 开发后台功能时，在 application\admin\controller 下新建控制器，比如 index.php  
+```
+<?php
+// +----------------------------------------------------------------------
+// | snake
+// +----------------------------------------------------------------------
+// | Copyright (c) 2016~2022 http://baiyf.cn All rights reserved.
+// +----------------------------------------------------------------------
+// | Licensed ( http://www.apache.org/licenses/LICENSE-2.0 )
+// +----------------------------------------------------------------------
+// | Author: NickBai <1902822973@qq.com>
+// +----------------------------------------------------------------------
+namespace app\admin\controller;
+use app\admin\model\NodeModel;
+
+class Index extends Base
+{
+    public function index()
+    {
+        // 获取权限菜单
+        $node = new NodeModel();
+        $this->assign([
+            'menu' => $node->getMenu(session('rule'))
+        ]);
+
+        return $this->fetch('/index');
+    }
+
+    /**
+     * 后台默认首页
+     * @return mixed
+     */
+    public function indexPage()
+    {
+        return $this->fetch('index');
+    }
+}
+```
+
+> ==所有控制器均需要继承    Base.php==
+
+2. 在 model 文件夹下建立对应的 model，名称规范 以 Model结尾，例如 UserModel.php  
+
+```
+<?php
+// +----------------------------------------------------------------------
+// | snake
+// +----------------------------------------------------------------------
+// | Copyright (c) 2016~2022 http://baiyf.cn All rights reserved.
+// +----------------------------------------------------------------------
+// | Licensed ( http://www.apache.org/licenses/LICENSE-2.0 )
+// +----------------------------------------------------------------------
+// | Author: NickBai <1902822973@qq.com>
+// +----------------------------------------------------------------------
+namespace app\admin\model;
+
+use think\Model;
+
+class UserModel extends Model
+{
+    // 确定链接表名
+    protected $table = 'gk_user';
+}    
+```
+
+> 在类前声明要链接的表 前缀 + 表名  
+
+3. 在后台的 用户管理-->节点管理 里面添加响应的控制器 和 方法节点 所有的 public 的方法，均需要录入，以达到权限完全控制的目的。新建完成之后，退出系统，以 admin 身份重新登录。  
+
+==填写的控制器和方法名，规定全部以小写录入==
+
+4. 表单提交的内容，需要用过 validate 过滤，validate 名称的命名规范是 以Validate 结尾，例如：AdminValidate.php  
+```
+<?php
+// +----------------------------------------------------------------------
+// | snake
+// +----------------------------------------------------------------------
+// | Copyright (c) 2016~2022 http://baiyf.cn All rights reserved.
+// +----------------------------------------------------------------------
+// | Licensed ( http://www.apache.org/licenses/LICENSE-2.0 )
+// +----------------------------------------------------------------------
+// | Author: NickBai <1902822973@qq.com>
+// +----------------------------------------------------------------------
+namespace app\admin\validate;
+
+use think\Validate;
+
+class AdminValidate extends Validate
+{
+    protected $rule = [
+        ['userName', 'require', '用户名不能为空'],
+        ['password', 'require', '密码不能为空'],
+        ['code', 'require', '验证码不能为空']
+    ];
+
+}
+```
+validate 细节用法，参照 tp 手册
+
+5.新建对应的视图，渲染页面  
 
 
-> ThinkPHP5的运行环境要求PHP5.6以上。
+# 开发注意事项：
 
-## 安装
+## 控制器方面
+controller 的编写   
+1、必须继承 base.php  
+2、由于页面是异步渲染的，所以按钮需要在后台统一拼装完成，又为了达到权限控制的目的，现封装了按钮生成方法  
+```
+/**
+ * 生成操作按钮
+ * @param array $operate 操作按钮数组
+ */
+function showOperate($operate = [])
+{
+    if(empty($operate)){
+        return '';
+    }
 
-使用composer安装
+    $option = '';
+    foreach($operate as $key=>$vo){
+        if(authCheck($vo['auth'])){
+            $option .= ' <a href="' . $vo['href'] . '"><button type="button" class="btn btn-' . $vo['btnStyle'] . ' btn-sm">'.
+                '<i class="' . $vo['icon'] . '"></i> ' . $key . '</button></a>';
+        }
+    }
 
-~~~
-composer create-project topthink/think tp
-~~~
+    return $option;
+}
+```
 
-启动服务
+每个按钮是否显示 通过 authCheck 方法进行了判断
+```
+/**
+ * 权限检测
+ * @param $rule
+ */
+function authCheck($rule)
+{
+    $control = explode('/', $rule)['0'];
+    if(in_array($control, ['login', 'index'])){
+        return true;
+    }
 
-~~~
-cd tp
-php think run
-~~~
+    if(in_array($rule, session('action'))){
+        return true;
+    }
 
-然后就可以在浏览器中访问
+    return false;
+}
+```
 
-~~~
-http://localhost:8000
-~~~
+你需要显示那些按钮，只要配置相应的数组然后调用 该方法即可。
+```
+ /**
+     * 拼装操作按钮
+     * @param $id
+     * @return array
+     */
+    private function makeButton($id)
+    {
+        return [
+            '编辑' => [
+                'auth' => 'user/useredit',
+                'href' => url('user/userEdit', ['id' => $id]),
+                'btnStyle' => 'primary',
+                'icon' => 'fa fa-paste'
+            ],
+            '删除' => [
+                'auth' => 'user/userdel',
+                'href' => "javascript:userDel(" .$id .")",
+                'btnStyle' => 'danger',
+                'icon' => 'fa fa-trash-o'
+            ]
+        ];
+    }
+```
 
-更新框架
-~~~
-composer update topthink/framework
-~~~
+auth 部分的路由，全部为小写。  
+href 为按钮跳转地址  
+btnStyle 为按钮的颜色 class主要是bootstrap 的几种样式  
+icon  为按钮前置小图标 参考 H+
+
+异步消息返回，调用 msg 方法
+```
+/**
+ * 统一返回信息
+ * @param $code
+ * @param $data
+ * @param $msge
+ */
+function msg($code, $data, $msg)
+{
+    return compact('code', 'data', 'msg');
+}
+```
+
+为统一规范，现规定返回码  
+成功 返回 1，其余各种状态按照编号自由返回 < 1 的状态码，例如：
+```
+return json(msg(-1, '', '密码错误'));
+return json(msg(-2, '', '用户名错误'));
+
+return json(msg(1, '', '添加用户成功'));
+```
+
+由于 tp 通过model 查询的数据，如果是 find 查询的可以通过 toArray()方法转换成数组处理，而 通过select 查询的结果集无法直接转换成数组，因此，特封装了一个方法 objToArray
+```
+/**
+ * 对象转换成数组
+ * @param $obj
+ */
+function objToArray($obj)
+{
+    return json_decode(json_encode($obj), true);
+}
+```
+
+列表部分 采用的是 bootstrap 的table 插件，因此返回格式必须如下：
+```
+$return['total'] = $user->getAllUsers($where);  //总数据
+$return['rows'] = $selectResult; // 结果集
+
+return json($return);
+```
+
+分页的写法可以自行计算
+```
+$limit = $param['pageSize']; // 每页多少条
+$offset = ($param['pageNumber'] - 1) * $limit; // 这次分页从哪个开始
+```
 
 
-## 在线手册
+## 视图方面
 
-+ [完全开发手册](https://www.kancloud.cn/manual/thinkphp5_1/content)
-+ [升级指导](https://www.kancloud.cn/manual/thinkphp5_1/354155) 
+视图大部分采用的是异步渲染，而且完全收录了 H+ 的页面，因此在特殊布局上，可以去H+ ，直接右键 拿出H+ 的源码，即可完成页面布局。  
 
-## 目录结构
+系统资源统一路径配置：
+```
+    // 模板参数替换
+    'view_replace_str'       => array(
+        '__CSS__'    => '/static/admin/css',
+        '__JS__'     => '/static/admin/js',
+        '__IMG__' => '/static/admin/images',
+    ),
+```
 
-初始的目录结构如下：
 
-~~~
-www  WEB部署目录（或者子目录）
-├─application           应用目录
-│  ├─common             公共模块目录（可以更改）
-│  ├─module_name        模块目录
-│  │  ├─common.php      模块函数文件
-│  │  ├─controller      控制器目录
-│  │  ├─model           模型目录
-│  │  ├─view            视图目录
-│  │  └─ ...            更多类库目录
-│  │
-│  ├─command.php        命令行定义文件
-│  ├─common.php         公共函数文件
-│  └─tags.php           应用行为扩展定义文件
-│
-├─config                应用配置目录
-│  ├─module_name        模块配置目录
-│  │  ├─database.php    数据库配置
-│  │  ├─cache           缓存配置
-│  │  └─ ...            
-│  │
-│  ├─app.php            应用配置
-│  ├─cache.php          缓存配置
-│  ├─cookie.php         Cookie配置
-│  ├─database.php       数据库配置
-│  ├─log.php            日志配置
-│  ├─session.php        Session配置
-│  ├─template.php       模板引擎配置
-│  └─trace.php          Trace配置
-│
-├─route                 路由定义目录
-│  ├─route.php          路由定义
-│  └─...                更多
-│
-├─public                WEB目录（对外访问目录）
-│  ├─index.php          入口文件
-│  ├─router.php         快速测试文件
-│  └─.htaccess          用于apache的重写
-│
-├─thinkphp              框架系统目录
-│  ├─lang               语言文件目录
-│  ├─library            框架类库目录
-│  │  ├─think           Think类库包目录
-│  │  └─traits          系统Trait目录
-│  │
-│  ├─tpl                系统模板目录
-│  ├─base.php           基础定义文件
-│  ├─console.php        控制台入口文件
-│  ├─convention.php     框架惯例配置文件
-│  ├─helper.php         助手函数文件
-│  ├─phpunit.xml        phpunit配置文件
-│  └─start.php          框架入口文件
-│
-├─extend                扩展类库目录
-├─runtime               应用的运行时目录（可写，可定制）
-├─vendor                第三方类库目录（Composer依赖库）
-├─build.php             自动生成定义文件（参考）
-├─composer.json         composer 定义文件
-├─LICENSE.txt           授权说明文件
-├─README.md             README 文件
-├─think                 命令行入口文件
-~~~
 
-> 可以使用php自带webserver快速测试
-> 切换到根目录后，启动命令：php think run
+# 线上预览地址:
+http://snake.baiyf.com
 
-## 命名规范
-
-`ThinkPHP5`遵循PSR-2命名规范和PSR-4自动加载规范，并且注意如下规范：
-
-### 目录和文件
-
-*   目录不强制规范，驼峰和小写+下划线模式均支持；
-*   类库、函数文件统一以`.php`为后缀；
-*   类的文件名均以命名空间定义，并且命名空间的路径和类库文件所在路径一致；
-*   类名和类文件名保持一致，统一采用驼峰法命名（首字母大写）；
-
-### 函数和类、属性命名
-
-*   类的命名采用驼峰法，并且首字母大写，例如 `User`、`UserType`，默认不需要添加后缀，例如`UserController`应该直接命名为`User`；
-*   函数的命名使用小写字母和下划线（小写字母开头）的方式，例如 `get_client_ip`；
-*   方法的命名使用驼峰法，并且首字母小写，例如 `getUserName`；
-*   属性的命名使用驼峰法，并且首字母小写，例如 `tableName`、`instance`；
-*   以双下划线“__”打头的函数或方法作为魔法方法，例如 `__call` 和 `__autoload`；
-
-### 常量和配置
-
-*   常量以大写字母和下划线命名，例如 `APP_PATH`和 `THINK_PATH`；
-*   配置参数以小写字母和下划线命名，例如 `url_route_on` 和`url_convert`；
-
-### 数据表和字段
-
-*   数据表和字段采用小写加下划线方式命名，并注意字段名不要以下划线开头，例如 `think_user` 表和 `user_name`字段，不建议使用驼峰和中文作为数据表字段命名。
-
-## 参与开发
-
-请参阅 [ThinkPHP5 核心框架包](https://github.com/top-think/framework)。
-
-## 版权信息
-
-ThinkPHP遵循Apache2开源协议发布，并提供免费使用。
-
-本项目包含的第三方源码和二进制文件之版权信息另行标注。
-
-版权所有Copyright © 2006-2018 by ThinkPHP (http://thinkphp.cn)
-
-All rights reserved。
-
-ThinkPHP® 商标和著作权所有者为上海顶想信息科技有限公司。
-
-更多细节参阅 [LICENSE.txt](LICENSE.txt)
