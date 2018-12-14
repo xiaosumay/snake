@@ -1,18 +1,18 @@
 {
-    "name": "topthink/think",
-    "description": "the new thinkphp framework",
+    "name": "cyclone/snake",
+    "description": "thinkphp5做的通用系统改后台",
     "type": "project",
     "keywords": [
-        "framework",
-        "thinkphp",
-        "ORM"
+        "snake",
+        "thinkphp"
     ],
-    "homepage": "http://thinkphp.cn/",
+
+    "homepage": "https://github.com/xiaosumay/snake",
     "license": "Apache-2.0",
     "authors": [
         {
-            "name": "liu21st",
-            "email": "liu21st@gmail.com"
+            "name": "xiaosumay",
+            "email": "xiaosumay@gmail.com"
         }
     ],
     "require": {
