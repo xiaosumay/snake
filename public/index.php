@@ -12,6 +12,9 @@
 // [ 应用入口文件 ]
 namespace think;
 
+if(!file_exists(__DIR__ . '/../data/install.lock')){
+    define('BIND_MODULE', 'install');
+}
 // 加载基础文件
 require __DIR__ . '/../thinkphp/base.php';
 
