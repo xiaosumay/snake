@@ -137,7 +137,6 @@ function check_func(){
 /**
  * 写入配置文件
  * @param $config
- * @return array 配置信息
  */
 function write_config($config){
     if(is_array($config)){
@@ -149,13 +148,12 @@ function write_config($config){
         }
 
         //写入应用配置文件
-        if(file_put_contents(Env::get('conf_path') . 'database.php', $conf)){
+        if(file_put_contents(Env::get('config_path') . 'database.php', $conf)){
             show_msg('配置文件写入成功');
         } else {
             show_msg('配置文件写入失败！', 'error');
             session('error', true);
         }
-        return '';
     }
 }
 

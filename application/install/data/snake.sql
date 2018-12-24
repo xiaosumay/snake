@@ -28,7 +28,7 @@ CREATE TABLE `snake_articles` (
   `content` text NOT NULL COMMENT '文章内容',
   `add_time` datetime NOT NULL COMMENT '发布时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
 -- Records of snake_articles
@@ -48,7 +48,7 @@ CREATE TABLE `snake_node` (
   `type_id` int(11) NOT NULL COMMENT '父级节点id',
   `style` varchar(155) DEFAULT '' COMMENT '菜单样式',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC;
 
 -- ----------------------------
 -- Records of snake_node
@@ -91,7 +91,7 @@ CREATE TABLE `snake_role` (
   `role_name` varchar(155) NOT NULL COMMENT '角色名称',
   `rule` varchar(255) DEFAULT '' COMMENT '权限节点数据',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC;
 
 -- ----------------------------
 -- Records of snake_role
@@ -115,7 +115,7 @@ CREATE TABLE `snake_user` (
   `status` int(1) NOT NULL DEFAULT '0' COMMENT '状态',
   `role_id` int(11) NOT NULL DEFAULT '1' COMMENT '用户角色id',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8_bin;
 
 -- ----------------------------
 -- Records of snake_user

@@ -15,7 +15,7 @@
 
 return [
     // 应用名称
-    'app_name'               => '',
+    'app_name'               => 'snake后台管理系统',
     // 应用地址
     'app_host'               => '',
     // 应用调试模式
