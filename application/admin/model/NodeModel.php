@@ -19,6 +19,11 @@ class NodeModel extends Model
 
     /**
      * 获取节点数据
+     * @param $id
+     * @return string
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
      */
     public function getNodeInfo($id)
     {
@@ -48,7 +53,11 @@ class NodeModel extends Model
 
     /**
      * 根据节点数据获取对应的菜单
-     * @param $nodeStr
+     * @param string $nodeStr
+     * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
      */
     public function getMenu($nodeStr = '')
     {
@@ -68,6 +77,10 @@ class NodeModel extends Model
     /**
      * 根据条件获取访问权限节点数据
      * @param $where
+     * @return array|\PDOStatement|string|\think\Collection
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
      */
     public function getActions($where)
     {
@@ -77,6 +90,9 @@ class NodeModel extends Model
     /**
      * 获取节点数据
      * @return mixed
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
      */
     public function getNodeList()
     {
@@ -86,6 +102,7 @@ class NodeModel extends Model
     /**
      * 插入节点信息
      * @param $param
+     * @return array
      */
     public function insertNode($param)
     {
@@ -93,7 +110,7 @@ class NodeModel extends Model
 
             $this->save($param);
             return msg(1, '', '添加节点成功');
-        }catch(PDOException $e){
+        }catch(\Exception $e){
 
             return msg(-2, '', $e->getMessage());
         }
@@ -102,6 +119,7 @@ class NodeModel extends Model
     /**
      * 编辑节点
      * @param $param
+     * @return array
      */
     public function editNode($param)
     {
@@ -109,7 +127,7 @@ class NodeModel extends Model
 
             $this->save($param, ['id' => $param['id']]);
             return msg(1, '', '编辑节点成功');
-        }catch(PDOException $e){
+        }catch(\Exception $e){
 
             return msg(-2, '', $e->getMessage());
         }
@@ -118,6 +136,8 @@ class NodeModel extends Model
     /**
      * 删除节点
      * @param $id
+     * @return array
+     * @throws \Exception
      */
     public function delNode($id)
     {
@@ -126,7 +146,7 @@ class NodeModel extends Model
             $this->where('id', $id)->delete();
             return msg(1, '', '删除节点成功');
 
-        }catch(PDOException $e){
+        }catch(\Exception $e){
             return msg(-1, '', $e->getMessage());
         }
     }

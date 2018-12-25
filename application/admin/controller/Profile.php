@@ -10,9 +10,11 @@
 // +----------------------------------------------------------------------
 namespace app\admin\controller;
 
-use think\Response;
+use think\facade\View;
 use think\Image;
 use app\admin\model\UserModel;
+use think\response\Json;
+
 /**
  *
  */
@@ -29,14 +31,17 @@ class Profile extends Base
     public function initialize()
     {
         parent::initialize();
-        $this->public_path = ROOT_PATH.'public';
+        $this->public_path      = config("root_path") . 'public';
         $this->head_return_path = '/upload/head';
-        $this->head_save_path = ROOT_PATH.'public/upload/head';
+        $this->head_save_path   = config("root_path") . 'public/upload/head';
     }
 
     /**
      * 修改个人信息
      * @return json||View
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
      */
     public function index()
     {
@@ -53,22 +58,22 @@ class Profile extends Base
             }
 
             $user_model = new UserModel();
-            $user_data = $user_model->getOneUser(session('id'));
+            $user_data  = $user_model->getOneUser(session('id'));
 
             if (is_null($user_data)) {
                 return json(msg(-1, '', 'not found user'));
             }
 
-            if ($user_data['password'] !== md5($param['old_password']. config('salt'))) {
+            if ($user_data['password'] !== md5($param['old_password'] . config('salt'))) {
                 return json(msg(-3, '', '原始密码错误'));
             }
 
-            if ($user_data['password'] === md5($param['new_password']. config('salt'))) {
+            if ($user_data['password'] === md5($param['new_password'] . config('salt'))) {
                 return json(msg(-4, '', '新密码不能和旧密码相同'));
             }
 
-            $param['password'] = md5($param['new_password']. config('salt'));
-            $flag = $user_model->updateStatus($param, session('id'));
+            $param['password'] = md5($param['new_password'] . config('salt'));
+            $flag              = $user_model->updateStatus($param, session('id'));
             return json(msg($flag['code'], $flag['data'], $flag['msg']));
         }
 
@@ -78,6 +83,10 @@ class Profile extends Base
     /**
      * 头像编辑
      * @return View
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     * @throws \Exception
      */
     public function headEdit()
     {
@@ -93,11 +102,11 @@ class Profile extends Base
             }
 
             $user_model = new UserModel();
-            $flag = $user_model->save($param, ['id' => session('id')]);
+            $flag       = $user_model->save($param, ['id' => session('id')]);
             if ($flag) {
                 $this->removRoleCache();
                 return json(msg(1, url('index/indexpage'), 'ok'));
-            }else {
+            } else {
                 return json(msg(-1, '', '修改失败'));
             }
 
@@ -105,7 +114,7 @@ class Profile extends Base
 
         //访问
         $user_model = new UserModel();
-        $user_data = $user_model->getOneUser(session('id'));
+        $user_data  = $user_model->getOneUser(session('id'));
         if (is_null($user_data)) {
             return json(msg(-1, url('login/index'), 'not found user'));
         }
@@ -119,7 +128,7 @@ class Profile extends Base
      * 这里是croppic插件的处理逻辑
      * @return json
      */
-    public function uploadHeade()
+    public function uploadHeader()
     {
         if (!$this->request->isAjax()) {
             return Response('not supported', 500);
@@ -133,19 +142,19 @@ class Profile extends Base
 
         //获取文件后缀名
         $image_type = pathinfo($file->getInfo('name'), PATHINFO_EXTENSION);
-        $save_name = $this->getImageName($image_type);
-        $info = $file->move($this->head_save_path, $save_name);
+        $save_name  = $this->getImageName($image_type);
+        $info       = $file->move($this->head_save_path, $save_name);
 
         if (false === $info) {
-            return json(['status' => 'error', 'message' => $file->error]);
-        }else {
+            return json(['status' => 'error', 'message' => $file->getError()]);
+        } else {
             //返回图像信息
-            $image = Image::open($this->head_save_path. '/'. $save_name);
+            $image = Image::open($this->head_save_path . '/' . $save_name);
             return json([
                 'status' => 'success',
-                'url' => $this->head_return_path. '/'. $save_name,
-                "width" => $image->width(),
-				"height" => $image->height()
+                'url'    => $this->head_return_path . '/' . $save_name,
+                "width"  => $image->width(),
+                "height" => $image->height(),
             ]);
         }
     }
@@ -168,7 +177,7 @@ class Profile extends Base
 
         //抛出符合croppic插件规范的异常，防止前端js错误
         try {
-            $image = Image::open($this->public_path. $param['imgUrl']);
+            $image     = Image::open($this->public_path . $param['imgUrl']);
             $save_name = $this->getImageName($image->type());
 
             //预处理裁剪
@@ -183,7 +192,7 @@ class Profile extends Base
             );
 
             //如果存在旋转参数
-            if(!empty($param['rotation'])){
+            if (!empty($param['rotation'])) {
                 //这里旋转生成的新图像会被GD库自动填充黑边
                 $image->rotate((int)$param['rotation']);
 
@@ -209,8 +218,8 @@ class Profile extends Base
             );
 
             //保存图像
-            $image->save($this->head_save_path. '/'. $save_name);
-            return json(['status' => 'success', 'url' => $this->head_return_path. '/'. $save_name]);
+            $image->save($this->head_save_path . '/' . $save_name);
+            return json(['status' => 'success', 'url' => $this->head_return_path . '/' . $save_name]);
         } catch (\think\image\Exception $e) {
             return json(['status' => 'error', 'message' => $e->getMessage()]);
         }
@@ -218,13 +227,13 @@ class Profile extends Base
 
     /**
      * 获取图像名称(固定长度32)
-     * @param  string  $image_type 图像类型
+     * @param  string $image_type 图像类型
      * @return string            随机图像名称
      */
     private function getImageName($image_type)
     {
-        $str = "QWERTYUIOPASDFGHJKLZXCVBNM1234567890qwertyuiopasdfghjklzxcvbnm";
+        $str  = "QWERTYUIOPASDFGHJKLZXCVBNM1234567890qwertyuiopasdfghjklzxcvbnm";
         $name = substr(str_shuffle($str), mt_rand(0, 30), 32);
-        return $name. '.'. $image_type;
+        return $name . '.' . $image_type;
     }
 }

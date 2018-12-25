@@ -15,6 +15,12 @@ use app\admin\model\ArticleModel;
 class Articles extends Base
 {
     // 文章列表
+    /**
+     * @return mixed|\think\response\Json
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
     public function index()
     {
         if(request()->isAjax()){
@@ -64,6 +70,12 @@ class Articles extends Base
         return $this->fetch();
     }
 
+    /**
+     * @return mixed|\think\response\Json
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
     public function articleEdit()
     {
         $article = new ArticleModel();
@@ -99,7 +111,7 @@ class Articles extends Base
 
             $file = request()->file('file');
             // 移动到框架应用根目录/public/uploads/ 目录下
-            $info = $file->move(ROOT_PATH . 'public' . DS . 'upload');
+            $info = $file->move(config("root_path") . 'public' . DIRECTORY_SEPARATOR . 'upload');
             if($info){
                 $src =  '/upload' . '/' . date('Ymd') . '/' . $info->getFilename();
                 return json(msg(0, ['src' => $src], ''));

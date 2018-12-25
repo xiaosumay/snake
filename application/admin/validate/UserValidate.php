@@ -15,7 +15,10 @@ use think\Validate;
 class UserValidate extends Validate
 {
     protected $rule = [
-        ['user_name', 'unique:user', '管理员已经存在']
+        'user_name' => 'unique:user',
     ];
 
+    protected $message = [
+        'user_name.require' => '管理员已经存在',
+    ];
 }

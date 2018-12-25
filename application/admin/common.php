@@ -2,17 +2,18 @@
 /**
  * 生成操作按钮
  * @param array $operate 操作按钮数组
+ * @return string
  */
 function showOperate($operate = [])
 {
-    if(empty($operate)){
+    if (empty($operate)) {
         return '';
     }
 
     $option = '';
-    foreach($operate as $key=>$vo){
-        if(authCheck($vo['auth'])){
-            $option .= ' <a href="' . $vo['href'] . '"><button type="button" class="btn btn-' . $vo['btnStyle'] . ' btn-sm">'.
+    foreach ($operate as $key => $vo) {
+        if (authCheck($vo['auth'])) {
+            $option .= ' <a href="' . $vo['href'] . '"><button type="button" class="btn btn-' . $vo['btnStyle'] . ' btn-sm">' .
                 '<i class="' . $vo['icon'] . '"></i> ' . $key . '</button></a>';
         }
     }
@@ -23,6 +24,7 @@ function showOperate($operate = [])
 /**
  * 将字符解析成数组
  * @param $str
+ * @return array
  */
 function parseParams($str)
 {
@@ -35,13 +37,14 @@ function parseParams($str)
  * 子孙树 用于菜单整理
  * @param $param
  * @param int $pid
+ * @return array
  */
 function subTree($param, $pid = 0)
 {
     static $res = [];
-    foreach($param as $key=>$vo){
+    foreach ($param as $key => $vo) {
 
-        if( $pid == $vo['pid'] ){
+        if ($pid == $vo['pid']) {
             $res[] = $vo;
             subTree($param, $vo['id']);
         }
@@ -57,25 +60,25 @@ function subTree($param, $pid = 0)
  */
 function prepareMenu($param)
 {
-    $param = objToArray($param);
+    $param  = objToArray($param);
     $parent = []; //父类
-    $child = [];  //子类
+    $child  = [];  //子类
 
-    foreach($param as $key=>$vo){
+    foreach ($param as $key => $vo) {
 
-        if(0 == $vo['type_id']){
+        if (0 == $vo['type_id']) {
             $vo['href'] = '#';
-            $parent[] = $vo;
-        }else{
-            $vo['href'] = url($vo['control_name'] .'/'. $vo['action_name']); //跳转地址
-            $child[] = $vo;
+            $parent[]   = $vo;
+        } else {
+            $vo['href'] = url($vo['control_name'] . '/' . $vo['action_name']); //跳转地址
+            $child[]    = $vo;
         }
     }
 
-    foreach($parent as $key=>$vo){
-        foreach($child as $k=>$v){
+    foreach ($parent as $key => $vo) {
+        foreach ($child as $k => $v) {
 
-            if($v['type_id'] == $vo['id']){
+            if ($v['type_id'] == $vo['id']) {
                 $parent[$key]['child'][] = $v;
             }
         }
@@ -88,27 +91,28 @@ function prepareMenu($param)
 /**
  * 解析备份sql文件
  * @param $file
+ * @return array
  */
 function analysisSql($file)
 {
     // sql文件包含的sql语句数组
-    $sqls = array ();
-    $f = fopen ( $file, "rb" );
+    $sqls = [];
+    $f    = fopen($file, "rb");
     // 创建表缓冲变量
     $create = '';
-    while ( ! feof ( $f ) ) {
+    while (!feof($f)) {
         // 读取每一行sql
-        $line = fgets ( $f );
+        $line = fgets($f);
         // 如果包含空白行，则跳过
-        if (trim ( $line ) == '') {
+        if (trim($line) == '') {
             continue;
         }
         // 如果结尾包含';'(即为一个完整的sql语句，这里是插入语句)，并且不包含'ENGINE='(即创建表的最后一句)，
-        if (! preg_match ( '/;/', $line, $match ) || preg_match ( '/ENGINE=/', $line, $match )) {
+        if (!preg_match('/;/', $line, $match) || preg_match('/ENGINE=/', $line, $match)) {
             // 将本次sql语句与创建表sql连接存起来
             $create .= $line;
             // 如果包含了创建表的最后一句
-            if (preg_match ( '/ENGINE=/', $create, $match )) {
+            if (preg_match('/ENGINE=/', $create, $match)) {
                 // 则将其合并到sql数组
                 $sqls [] = $create;
                 // 清空当前，准备下一个表的创建
@@ -120,7 +124,7 @@ function analysisSql($file)
 
         $sqls [] = $line;
     }
-    fclose ( $f );
+    fclose($f);
 
     return $sqls;
 }
@@ -129,7 +133,8 @@ function analysisSql($file)
  * 统一返回信息
  * @param $code
  * @param $data
- * @param $msge
+ * @param $msg
+ * @return array
  */
 function msg($code, $data, $msg)
 {
@@ -139,6 +144,7 @@ function msg($code, $data, $msg)
 /**
  * 对象转换成数组
  * @param $obj
+ * @return mixed
  */
 function objToArray($obj)
 {
@@ -148,14 +154,15 @@ function objToArray($obj)
 /**
  * 权限检测
  * @param $rule
+ * @return bool
  */
 function authCheck($rule)
 {
     $control = explode('/', $rule)['0'];
-    if(in_array($control, ['login', 'index'])){
+    if (in_array($control, ['login', 'index'])) {
         return true;
     }
-    if(in_array($rule, cache(session('role_id')))){
+    if (in_array($rule, cache(session('role_id')))) {
         return true;
     }
 
@@ -166,37 +173,38 @@ function authCheck($rule)
  * 整理出tree数据 ---  layui tree
  * @param $pInfo
  * @param $spread
+ * @return array
  */
 function getTree($pInfo, $spread = true)
 {
 
-    $res = [];
+    $res  = [];
     $tree = [];
     //整理数组
-    foreach($pInfo as $key=>$vo){
+    foreach ($pInfo as $key => $vo) {
 
-        if($spread){
+        if ($spread) {
             $vo['spread'] = true;  //默认展开
         }
-        $res[$vo['id']] = $vo;
+        $res[$vo['id']]             = $vo;
         $res[$vo['id']]['children'] = [];
     }
     unset($pInfo);
 
     //查找子孙
-    foreach($res as $key=>$vo){
-        if(0 != $vo['pid']){
+    foreach ($res as $key => $vo) {
+        if (0 != $vo['pid']) {
             $res[$vo['pid']]['children'][] = &$res[$key];
         }
     }
 
     //过滤杂质
-    foreach( $res as $key=>$vo ){
-        if(0 == $vo['pid']){
+    foreach ($res as $key => $vo) {
+        if (0 == $vo['pid']) {
             $tree[] = $vo;
         }
     }
-    unset( $res );
+    unset($res);
 
     return $tree;
 }

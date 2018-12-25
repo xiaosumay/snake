@@ -13,6 +13,11 @@ namespace app\admin\controller;
 class Data extends Base
 {
     // 备份首页列表
+    /**
+     * @return mixed
+     * @throws \think\db\exception\BindParamException
+     * @throws \think\exception\PDOException
+     */
     public function index()
     {
         $tables = db()->query('show tables');
@@ -40,10 +45,16 @@ class Data extends Base
     }
 
     // 备份数据
+
+    /**
+     * @return \think\response\Json
+     * @throws \think\db\exception\BindParamException
+     * @throws \think\exception\PDOException
+     */
     public function importData()
     {
         set_time_limit(0);
-        $table = input('param.table');
+        $table = addslashes(input('param.table'));
 
         $sqlStr = "SET FOREIGN_KEY_CHECKS=0;\r\n";
         $sqlStr .= "DROP TABLE IF EXISTS `$table`;\r\n";
@@ -73,10 +84,20 @@ class Data extends Base
     }
 
     // 还原数据
+
+    /**
+     * @return \think\response\Json
+     * @throws \think\db\exception\BindParamException
+     * @throws \think\exception\PDOException
+     */
     public function backData()
     {
         set_time_limit(0);
-        $table = input('param.table');
+        $table = addslashes(input('param.table'));
+
+        if(stripos($table, "..")) {
+            return json(['code' => 999, 'data' => '', 'msg' => 'error']);
+        }
 
         if(!file_exists(config('back_path') . $table . ".sql")){
             return json(['code' => -1, 'data' => '', 'msg' => '备份数据不存在!']);

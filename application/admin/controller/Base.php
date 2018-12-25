@@ -16,6 +16,9 @@ use app\admin\model\RoleModel;
 
 class Base extends Controller
 {
+    /**
+     * @return array
+     */
     public function initialize()
     {
         if(empty(session('username')) || empty(session('id'))){
@@ -51,6 +54,11 @@ class Base extends Controller
 
     }
 
+    /**
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
     private function cacheCheck()
     {
         $action = cache(session('role_id'));
@@ -64,6 +72,11 @@ class Base extends Controller
         }
     }
 
+    /**
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
     protected function removRoleCache()
     {
         $roleModel = new RoleModel();

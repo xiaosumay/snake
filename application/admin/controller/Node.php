@@ -15,11 +15,17 @@ use app\admin\model\NodeModel;
 class Node extends Base
 {
     // 节点列表
+    /**
+     * @return mixed|\think\response\Json
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
     public function index()
     {
-        if(request()->isAjax()){
+        if (request()->isAjax()) {
 
-            $node = new NodeModel();
+            $node  = new NodeModel();
             $nodes = $node->getNodeList();
 
             $nodes = getTree(objToArray($nodes), false);
@@ -30,6 +36,13 @@ class Node extends Base
     }
 
     // 添加节点
+
+    /**
+     * @return \think\response\Json
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
     public function nodeAdd()
     {
         $param = input('post.');
@@ -41,6 +54,13 @@ class Node extends Base
     }
 
     // 编辑节点
+
+    /**
+     * @return \think\response\Json
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
     public function nodeEdit()
     {
         $param = input('post.');
@@ -51,7 +71,11 @@ class Node extends Base
         return json(msg($flag['code'], $flag['data'], $flag['msg']));
     }
 
-    // 删除节点
+    /**
+     * 删除节点
+     * @return \think\response\Json
+     * @throws \Exception
+     */
     public function nodeDel()
     {
         $id = input('param.id');

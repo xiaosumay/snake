@@ -22,6 +22,10 @@ class ArticleModel extends Model
      * @param $where
      * @param $offset
      * @param $limit
+     * @return array|\PDOStatement|string|\think\Collection
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
      */
     public function getArticlesByWhere($where, $offset, $limit)
     {
@@ -31,6 +35,7 @@ class ArticleModel extends Model
     /**
      * 根据搜索条件获取所有的文章数量
      * @param $where
+     * @return float|string
      */
     public function getAllArticles($where)
     {
@@ -40,19 +45,20 @@ class ArticleModel extends Model
     /**
      * 添加文章
      * @param $param
+     * @return array
      */
     public function addArticle($param)
     {
-        try{
+        try {
             $result = $this->validate('ArticleValidate')->save($param);
-            if(false === $result){
+            if (false === $result) {
                 // 验证失败 输出错误信息
                 return msg(-1, '', $this->getError());
-            }else{
+            } else {
 
                 return msg(1, url('articles/index'), '添加文章成功');
             }
-        }catch (\Exception $e){
+        } catch (\Exception $e) {
             return msg(-2, '', $e->getMessage());
         }
     }
@@ -60,21 +66,22 @@ class ArticleModel extends Model
     /**
      * 编辑文章信息
      * @param $param
+     * @return array
      */
     public function editArticle($param)
     {
-        try{
+        try {
 
             $result = $this->validate('ArticleValidate')->save($param, ['id' => $param['id']]);
 
-            if(false === $result){
+            if (false === $result) {
                 // 验证失败 输出错误信息
                 return msg(-1, '', $this->getError());
-            }else{
+            } else {
 
                 return msg(1, url('articles/index'), '编辑文章成功');
             }
-        }catch(\Exception $e){
+        } catch (\Exception $e) {
             return msg(-2, '', $e->getMessage());
         }
     }
@@ -82,6 +89,10 @@ class ArticleModel extends Model
     /**
      * 根据文章的id 获取文章的信息
      * @param $id
+     * @return array|\PDOStatement|string|Model|null
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
      */
     public function getOneArticle($id)
     {
@@ -91,15 +102,14 @@ class ArticleModel extends Model
     /**
      * 删除文章
      * @param $id
+     * @return array
      */
     public function delArticle($id)
     {
-        try{
-
+        try {
             $this->where('id', $id)->delete();
             return msg(1, '', '删除文章成功');
-
-        }catch(\Exception $e){
+        } catch (\Exception $e) {
             return msg(-1, '', $e->getMessage());
         }
     }

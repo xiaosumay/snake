@@ -10,7 +10,6 @@
 // +----------------------------------------------------------------------
 namespace app\admin\controller;
 
-use app\admin\model\RoleModel;
 use app\admin\model\UserModel;
 use think\captcha\Captcha;
 use think\Controller;
@@ -23,7 +22,8 @@ class Login extends Controller
         return $this->fetch('/login');
     }
 
-    protected static function check_verify($code, $id = ''){
+    protected static function check_verify($code, $id = '')
+    {
         $captcha = new Captcha();
         return $captcha->check($code, $id);
     }
@@ -33,10 +33,10 @@ class Login extends Controller
     {
         $userName = input("param.user_name");
         $password = input("param.password");
-        $code = input("param.code");
+        $code     = input("param.code");
 
         $result = $this->validate(compact('userName', 'password', "code"), 'AdminValidate');
-        if(true !== $result){
+        if (true !== $result) {
             return json(msg(-1, '', $result));
         }
 
@@ -45,17 +45,17 @@ class Login extends Controller
         }
 
         $userModel = new UserModel();
-        $hasUser = $userModel->checkUser($userName);
+        $hasUser   = $userModel->checkUser($userName);
 
-        if(empty($hasUser)){
+        if (empty($hasUser)) {
             return json(msg(-3, '', '管理员不存在'));
         }
 
-        if(md5($password . config('salt')) != $hasUser['password']){
+        if (md5($password . config('salt')) != $hasUser['password']) {
             return json(msg(-4, '', '密码错误'));
         }
 
-        if(1 != $hasUser['status']){
+        if (1 != $hasUser['status']) {
             return json(msg(-5, '', '该账号被禁用'));
         }
 
@@ -68,13 +68,13 @@ class Login extends Controller
 
         // 更新管理员状态
         $param = [
-            'login_times' => $hasUser['login_times'] + 1,
-            'last_login_ip' => request()->ip(),
-            'last_login_time' => time()
+            'login_times'     => $hasUser['login_times'] + 1,
+            'last_login_ip'   => request()->ip(),
+            'last_login_time' => time(),
         ];
 
-        $res = $userModel->updateStatus($param, $hasUser['id']);
-        if(1 != $res['code']){
+        $res = $userModel->updateStatus($hasUser['id'], $param);
+        if (1 != $res['code']) {
             return json(msg(-6, '', $res['msg']));
         }
         // ['code' => 1, 'data' => url('index/index'), 'msg' => '登录成功']
@@ -85,11 +85,13 @@ class Login extends Controller
     public function checkVerify()
     {
         $verify = new Captcha();
-        $verify->imageH = 32;
-        $verify->imageW = 100;
-        $verify->length = 4;
+
+        $verify->imageH   = 32;
+        $verify->imageW   = 100;
+        $verify->length   = 4;
         $verify->useNoise = false;
         $verify->fontSize = 14;
+
         return $verify->entry();
     }
 

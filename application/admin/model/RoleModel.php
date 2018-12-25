@@ -22,6 +22,10 @@ class RoleModel extends Model
      * @param $where
      * @param $offset
      * @param $limit
+     * @return array|\PDOStatement|string|\think\Collection
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
      */
     public function getRoleByWhere($where, $offset, $limit)
     {
@@ -32,6 +36,7 @@ class RoleModel extends Model
     /**
      * 根据搜索条件获取所有的角色数量
      * @param $where
+     * @return float|string
      */
     public function getAllRole($where)
     {
@@ -41,6 +46,7 @@ class RoleModel extends Model
     /**
      * 插入角色信息
      * @param $param
+     * @return array
      */
     public function insertRole($param)
     {
@@ -54,7 +60,7 @@ class RoleModel extends Model
 
                 return msg(1, url('role/index'), '添加角色成功');
             }
-        }catch(PDOException $e){
+        }catch(\Exception $e){
 
             return msg(-2, '', $e->getMessage());
         }
@@ -63,6 +69,7 @@ class RoleModel extends Model
     /**
      * 编辑角色信息
      * @param $param
+     * @return array
      */
     public function editRole($param)
     {
@@ -77,7 +84,7 @@ class RoleModel extends Model
 
                 return msg(1, url('role/index'), '编辑角色成功');
             }
-        }catch(PDOException $e){
+        }catch(\Exception $e){
             return msg(-2, '', $e->getMessage());
         }
     }
@@ -85,6 +92,10 @@ class RoleModel extends Model
     /**
      * 根据角色id获取角色信息
      * @param $id
+     * @return array|\PDOStatement|string|Model|null
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
      */
     public function getOneRole($id)
     {
@@ -94,6 +105,7 @@ class RoleModel extends Model
     /**
      * 删除角色
      * @param $id
+     * @return array
      */
     public function delRole($id)
     {
@@ -102,18 +114,33 @@ class RoleModel extends Model
             $this->where('id', $id)->delete();
             return msg(1, '', '删除角色成功');
 
-        }catch(PDOException $e){
+        }catch(\Exception $e){
             return msg(-1, '', $e->getMessage());
         }
     }
 
     // 获取所有的角色信息
+
+    /**
+     * @return array|\PDOStatement|string|\think\Collection
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
     public function getRole()
     {
         return $this->select();
     }
 
     // 获取角色的权限节点
+
+    /**
+     * @param $id
+     * @return mixed
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
     public function getRuleById($id)
     {
         $res = $this->field('rule')->where('id', $id)->find();
@@ -124,6 +151,7 @@ class RoleModel extends Model
     /**
      * 分配权限
      * @param $param
+     * @return array
      */
     public function editAccess($param)
     {
@@ -131,7 +159,7 @@ class RoleModel extends Model
             $this->save($param, ['id' => $param['id']]);
             return msg(1, '', '分配权限成功');
 
-        }catch(PDOException $e){
+        }catch(\Exception $e){
             return msg(-1, '', $e->getMessage());
         }
     }
@@ -139,6 +167,10 @@ class RoleModel extends Model
     /**
      * 获取角色信息
      * @param $id
+     * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
      */
     public function getRoleInfo($id)
     {

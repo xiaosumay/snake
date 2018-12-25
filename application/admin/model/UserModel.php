@@ -22,10 +22,14 @@ class UserModel extends Model
      * @param $where
      * @param $offset
      * @param $limit
+     * @return array|\PDOStatement|string|\think\Collection
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
      */
     public function getUsersByWhere($where, $offset, $limit)
     {
-        return $this->alias('user')->field( 'user.*,role_name')
+        return $this->alias('user')->field('user.*,role_name')
             ->join('role rol', 'user.role_id = ' . 'rol.id')
             ->where($where)->limit($offset, $limit)->order('id desc')->select();
     }
@@ -33,6 +37,7 @@ class UserModel extends Model
     /**
      * 根据搜索条件获取所有的用户数量
      * @param $where
+     * @return float|string
      */
     public function getAllUsers($where)
     {
@@ -42,20 +47,21 @@ class UserModel extends Model
     /**
      * 插入管理员信息
      * @param $param
+     * @return array
      */
     public function insertUser($param)
     {
-        try{
+        try {
 
-            $result =  $this->validate('UserValidate')->save($param);
-            if(false === $result){
+            $result = $this->validate('UserValidate')->save($param);
+            if (false === $result) {
                 // 验证失败 输出错误信息
                 return msg(-1, '', $this->getError());
-            }else{
+            } else {
 
                 return msg(1, url('user/index'), '添加用户成功');
             }
-        }catch(PDOException $e){
+        } catch (\Exception $e) {
 
             return msg(-2, '', $e->getMessage());
         }
@@ -64,21 +70,22 @@ class UserModel extends Model
     /**
      * 编辑管理员信息
      * @param $param
+     * @return array
      */
     public function editUser($param)
     {
-        try{
+        try {
 
-            $result =  $this->validate('UserValidate')->save($param, ['id' => $param['id']]);
+            $result = $this->validate('UserValidate')->save($param, ['id' => $param['id']]);
 
-            if(false === $result){
+            if (false === $result) {
                 // 验证失败 输出错误信息
                 return msg(-1, '', $this->getError());
-            }else{
+            } else {
 
                 return msg(1, url('user/index'), '编辑用户成功');
             }
-        }catch(PDOException $e){
+        } catch (\Exception $e) {
             return msg(-2, '', $e->getMessage());
         }
     }
@@ -86,6 +93,10 @@ class UserModel extends Model
     /**
      * 根据管理员id获取角色信息
      * @param $id
+     * @return array|\PDOStatement|string|Model|null
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
      */
     public function getOneUser($id)
     {
@@ -95,15 +106,16 @@ class UserModel extends Model
     /**
      * 删除管理员
      * @param $id
+     * @return array
      */
     public function delUser($id)
     {
-        try{
+        try {
 
             $this->where('id', $id)->delete();
             return msg(1, '', '删除管理员成功');
 
-        }catch( PDOException $e){
+        } catch (\Exception $e) {
             return msg(-1, '', $e->getMessage());
         }
     }
@@ -111,6 +123,10 @@ class UserModel extends Model
     /**
      * 根据用户名获取管理员信息
      * @param $name
+     * @return array|\PDOStatement|string|Model|null
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
      */
     public function findUserByName($name)
     {
@@ -119,15 +135,16 @@ class UserModel extends Model
 
     /**
      * 更新管理员状态
+     * @param $uid
      * @param array $param
+     * @return array
      */
-    public function updateStatus($param = [], $uid)
+    public function updateStatus($uid, $param = [])
     {
-        try{
-
+        try {
             $this->where('id', $uid)->update($param);
             return msg(1, '', 'ok');
-        }catch (\Exception $e){
+        } catch (\Exception $e) {
 
             return msg(-1, '', $e->getMessage());
         }
@@ -136,11 +153,15 @@ class UserModel extends Model
     /**
      * 根据用户名检测用户数据
      * @param $userName
+     * @return array|\PDOStatement|string|Model|null
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
      */
     public function checkUser($userName)
     {
         return $this->alias('u')->join('role r', 'u.role_id = r.id')
-                ->where('u.user_name', $userName)
-                ->find();
+            ->where('u.user_name', $userName)
+            ->find();
     }
 }
