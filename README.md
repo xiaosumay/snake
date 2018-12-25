@@ -171,9 +171,15 @@ use think\Validate;
 class AdminValidate extends Validate
 {
     protected $rule = [
-        ['userName', 'require', '用户名不能为空'],
-        ['password', 'require', '密码不能为空'],
-        ['code', 'require', '验证码不能为空']
+        'userName' => 'require|alphaDash',
+        'password' => 'require',
+        'code'     => 'require',
+    ];
+
+    protected $message = [
+        'userName.require' => '用户名不能为空',
+        'password.require' => '密码不能为空',
+        'code.require'     => '验证码不能为空',
     ];
 
 }
