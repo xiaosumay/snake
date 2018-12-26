@@ -10,6 +10,8 @@
 // +----------------------------------------------------------------------
 namespace app\admin\controller;
 
+use think\Db;
+
 class Data extends Base
 {
     // 备份首页列表
@@ -20,26 +22,28 @@ class Data extends Base
      */
     public function index()
     {
-        $tables = db()->query('show tables');
-        foreach($tables as $key=>$vo){
-            $sql = "select count(0) as alls from " . $vo['Tables_in_' . config('database')['database']];
-            $tables[$key]['alls'] = db()->query($sql)['0']['alls'];
+        $dbname = Db::getConfig('database');
 
-            $table = $vo['Tables_in_' . config('database')['database']];
+        $tables = Db::query('show tables');
+        foreach ($tables as $key => &$vo) {
+            $sql                  = "select count(0) as alls from " . $vo['Tables_in_' . $dbname];
+            $tables[$key]['alls'] = Db::query($sql)['0']['alls'];
+
+            $table                   = $vo['Tables_in_' . $dbname];
             $tables[$key]['operate'] = showOperate($this->makeButton($table));
 
-            if(file_exists(config('back_path') . $vo['Tables_in_' . config('database')['database']] . ".sql")){
+            if (file_exists(config('back_path') . $vo['Tables_in_' . $dbname] . ".sql")) {
                 $tables[$key]['ctime'] = date('Y-m-d H:i:s', filemtime(config('back_path') . $vo['Tables_in_' .
-                    config('database')['database']] . ".sql"));
-            }else{
+                    $dbname] . ".sql"));
+            } else {
                 $tables[$key]['ctime'] = '无';
             }
 
         }
-        $this->assign([
-           'tables' => $tables
-        ]);
-        $this->assign('database_name', 'Tables_in_' . config('database')['database']);
+
+        $this->assign(['tables' => $tables]);
+
+        $this->assign('database_name', 'Tables_in_' . $dbname);
 
         return $this->fetch();
     }
@@ -63,20 +67,20 @@ class Data extends Base
         $sqlStr .= "\r\n";
 
         $result = db()->query('select * from ' . $table);
-        foreach($result as $key=>$vo){
-            $keys = array_keys($vo);
-            $keys = array_map('addslashes', $keys);
-            $keys = join('`,`', $keys);
-            $keys = "`" . $keys . "`";
-            $vals = array_values($vo);
-            $vals = array_map('addslashes', $vals);
-            $vals = join("','", $vals);
-            $vals = "'" . $vals . "'";
+        foreach ($result as $key => $vo) {
+            $keys   = array_keys($vo);
+            $keys   = array_map('addslashes', $keys);
+            $keys   = join('`,`', $keys);
+            $keys   = "`" . $keys . "`";
+            $vals   = array_values($vo);
+            $vals   = array_map('addslashes', $vals);
+            $vals   = join("','", $vals);
+            $vals   = "'" . $vals . "'";
             $sqlStr .= "insert into `$table`($keys) values($vals);\r\n";
         }
 
         $filename = config('back_path') . $table . ".sql";
-        $fp = fopen($filename, 'w');
+        $fp       = fopen($filename, 'w');
         fputs($fp, $sqlStr);
         fclose($fp);
 
@@ -95,16 +99,16 @@ class Data extends Base
         set_time_limit(0);
         $table = addslashes(input('param.table'));
 
-        if(stripos($table, "..")) {
+        if (stripos($table, "..")) {
             return json(['code' => 999, 'data' => '', 'msg' => 'error']);
         }
 
-        if(!file_exists(config('back_path') . $table . ".sql")){
+        if (!file_exists(config('back_path') . $table . ".sql")) {
             return json(['code' => -1, 'data' => '', 'msg' => '备份数据不存在!']);
         }
 
         $sqls = analysisSql(config('back_path') . $table . ".sql");
-        foreach($sqls as $key=>$sql){
+        foreach ($sqls as $key => $sql) {
             db()->query($sql);
         }
         return json(['code' => 1, 'data' => '', 'msg' => 'success']);
@@ -119,17 +123,17 @@ class Data extends Base
     {
         return [
             '备份' => [
-                'auth' => 'data/importdata',
-                'href' => "javascript:importData('" .$table ."')",
+                'auth'     => 'data/importdata',
+                'href'     => "javascript:importData('" . $table . "')",
                 'btnStyle' => 'primary',
-                'icon' => 'fa fa-tasks'
+                'icon'     => 'fa fa-tasks',
             ],
             '还原' => [
-                'auth' => 'data/backdata',
-                'href' => "javascript:backData('" .$table ."')",
+                'auth'     => 'data/backdata',
+                'href'     => "javascript:backData('" . $table . "')",
                 'btnStyle' => 'info',
-                'icon' => 'fa fa-retweet'
-            ]
+                'icon'     => 'fa fa-retweet',
+            ],
         ];
     }
 

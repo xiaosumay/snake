@@ -67,7 +67,7 @@ class Index extends Base
         }
 
         $this->assign([
-            'show_data' => json_encode($showData),
+            'show_data' => json_encode($showData, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE),
         ]);
 
         return $this->fetch('index');

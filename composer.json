@@ -23,7 +23,8 @@
         "ext-iconv": "*",
         "ext-mbstring": "*",
         "ext-pdo": "*",
-        "ext-json": "*"
+        "ext-json": "*",
+        "topthink/think-migration": "^2.0"
     },
     "autoload": {
         "psr-4": {

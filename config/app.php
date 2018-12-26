@@ -13,15 +13,13 @@
 // | 应用设置
 // +----------------------------------------------------------------------
 
-use think\facade\Env;
-
 return [
     // 应用名称
     'app_name'               => 'snake后台管理系统',
     // 应用地址
     'app_host'               => '',
     // 应用调试模式
-    'app_debug'              => true,
+    'app_debug'              => false,
     // 应用Trace
     'app_trace'              => false,
     // 是否支持多模块
@@ -52,16 +50,16 @@ return [
     'controller_suffix'      => false,
 
     //加密串
-    'salt' => 'wZPb~yxvA!ir38&Z',
+    'salt'                   => 'wZPb~yxvA!ir38&Z',
     //备份数据地址
-    'back_path' => Env::get("root_path") .'/back/',
+    'back_path'              => env("root_path") . '/back/',
 
     // +----------------------------------------------------------------------
     // | 模块设置
     // +----------------------------------------------------------------------
 
     // 默认模块名
-    'default_module'         => 'index',
+    'default_module'         => 'admin',
     // 禁止访问模块
     'deny_module_list'       => ['common'],
     // 默认控制器名
@@ -137,11 +135,11 @@ return [
     'route_cache_option'     => [],
 
     // 默认跳转页面对应的模板文件
-    'dispatch_success_tmpl'  => Env::get('think_path') . 'tpl/dispatch_jump.tpl',
-    'dispatch_error_tmpl'    => Env::get('think_path') . 'tpl/dispatch_jump.tpl',
+    'dispatch_success_tmpl'  => env('think_path') . 'tpl/dispatch_jump.tpl',
+    'dispatch_error_tmpl'    => env('think_path') . 'tpl/dispatch_jump.tpl',
 
     // 异常页面的模板文件
-    'exception_tmpl'         => Env::get('think_path') . 'tpl/think_exception.tpl',
+    'exception_tmpl'         => env('think_path') . 'tpl/think_exception.tpl',
 
     // 错误显示信息,非调试模式有效
     'error_message'          => '页面错误！请稍后再试～',
@@ -151,18 +149,18 @@ return [
     'exception_handle'       => '',
 
     // 管理员状态
-    'user_status' => [
+    'user_status'            => [
         '1' => '正常',
         '2' => '禁用'
     ],
     // 角色状态
-    'role_status' => [
+    'role_status'            => [
         '1' => '启用',
         '2' => '禁用'
     ],
 
     // 多库测试
-    'local' => [
+    'local'                  => [
         // 数据库类型
         'type'        => 'mysql',
         // 服务器地址
@@ -178,13 +176,4 @@ return [
         // 数据库表前缀
         'prefix'      => 's_',
     ],
-
-    //产品配置
-    'install_product_name'   => 'snake_', //产品名称
-    'install_website_domain' => 'http://www.baiyf.com/snake', //官方网址
-    'install_company_name'   => 'snake通用后台', //公司名称
-    'original_table_prefix'  => 'snake_', //默认表前缀
-
-    // 安装配置
-    'install_table_total' => 28, // 安装时，需执行的sql语句数量
 ];
