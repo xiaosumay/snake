@@ -24,10 +24,9 @@ thinkphp5做的通用系统改后台
 
 # 更新日志：  
 ### 2019.01.04
-1、开始操作 `php think keygen`
-2、生成表 `php think  migrate:run`
-2、生成默认数据 `php think seed:run`
-
+1. 开始操作 `php think keygen`
+2. 生成表 `php think  migrate:run`
+3. 生成默认数据 `php think seed:run`
 
 ### 2018.12.24
 1、已经升级到thinkphp5.1.23
