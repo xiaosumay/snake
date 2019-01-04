@@ -17,8 +17,6 @@ class Data extends Base
     // 备份首页列表
     /**
      * @return mixed
-     * @throws \think\db\exception\BindParamException
-     * @throws \think\exception\PDOException
      */
     public function index()
     {
@@ -38,11 +36,9 @@ class Data extends Base
             } else {
                 $tables[$key]['ctime'] = '无';
             }
-
         }
 
         $this->assign(['tables' => $tables]);
-
         $this->assign('database_name', 'Tables_in_' . $dbname);
 
         return $this->fetch();

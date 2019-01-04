@@ -12,8 +12,7 @@ namespace app\admin\controller;
 
 use app\admin\model\ArticleModel;
 
-class Articles extends Base
-{
+class Articles extends Base {
     // 文章列表
     /**
      * @return mixed|\think\response\Json
@@ -21,48 +20,45 @@ class Articles extends Base
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function index()
-    {
-        if(request()->isAjax()){
-
-            $param = input('param.');
-
-            $limit = $param['pageSize'];
-            $offset = ($param['pageNumber'] - 1) * $limit;
-
-            $where = [];
-            if (!empty($param['searchText'])) {
-                $where['title'] = ['like', '%' . $param['searchText'] . '%'];
-            }
-
-            $article = new ArticleModel();
-            $selectResult = $article->getArticlesByWhere($where, $offset, $limit);
-
-            foreach($selectResult as $key=>$vo){
-                $selectResult[$key]['thumbnail'] = '<img src="' . $vo['thumbnail'] . '" width="40px" height="40px">';
-                $selectResult[$key]['operate'] = showOperate($this->makeButton($vo['id']));
-            }
-
-            $return['total'] = $article->getAllArticles($where);  // 总数据
-            $return['rows'] = $selectResult;
-
-            return json($return);
+    public function index() {
+        if (!request()->isAjax()) {
+            return $this->fetch();
         }
 
-        return $this->fetch();
+        $param = input('param.');
+
+        $limit  = $param['pageSize'];
+        $offset = ($param['pageNumber'] - 1) * $limit;
+
+        $where = [];
+        if (!empty($param['searchText'])) {
+            $where['title'] = ['like', '%' . $param['searchText'] . '%'];
+        }
+
+        $article      = new ArticleModel();
+        $selectResult = $article->getArticlesByWhere($where, $offset, $limit);
+
+        foreach ($selectResult as $key => $vo) {
+            $selectResult[$key]['thumbnail'] = '<img src="' . $vo['thumbnail'] . '" width="40px" height="40px">';
+            $selectResult[$key]['operate']   = showOperate($this->makeButton($vo['id']));
+        }
+
+        $return['total'] = $article->getAllArticles($where);  // 总数据
+        $return['rows']  = $selectResult;
+
+        return json($return);
     }
 
     // 添加文章
-    public function articleAdd()
-    {
-        if(request()->isPost()){
+    public function articleAdd() {
+        if (request()->isPost()) {
             $param = input('post.');
 
             unset($param['file']);
             $param['add_time'] = date('Y-m-d H:i:s');
 
             $article = new ArticleModel();
-            $flag = $article->addArticle($param);
+            $flag    = $article->addArticle($param);
 
             return json(msg($flag['code'], $flag['data'], $flag['msg']));
         }
@@ -76,10 +72,9 @@ class Articles extends Base
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function articleEdit()
-    {
+    public function articleEdit() {
         $article = new ArticleModel();
-        if(request()->isPost()){
+        if (request()->isPost()) {
 
             $param = input('post.');
             unset($param['file']);
@@ -90,32 +85,30 @@ class Articles extends Base
 
         $id = input('param.id');
         $this->assign([
-            'article' => $article->getOneArticle($id)
+            'article' => $article->getOneArticle($id),
         ]);
         return $this->fetch();
     }
 
-    public function articleDel()
-    {
+    public function articleDel() {
         $id = input('param.id');
 
         $article = new ArticleModel();
-        $flag = $article->delArticle($id);
+        $flag    = $article->delArticle($id);
         return json(msg($flag['code'], $flag['data'], $flag['msg']));
     }
 
     // 上传缩略图
-    public function uploadImg()
-    {
-        if(request()->isAjax()){
+    public function uploadImg() {
+        if (request()->isAjax()) {
 
             $file = request()->file('file');
             // 移动到框架应用根目录/public/uploads/ 目录下
             $info = $file->move(config("root_path") . 'public' . DIRECTORY_SEPARATOR . 'upload');
-            if($info){
-                $src =  '/upload' . '/' . date('Ymd') . '/' . $info->getFilename();
+            if ($info) {
+                $src = '/upload' . '/' . date('Ymd') . '/' . $info->getFilename();
                 return json(msg(0, ['src' => $src], ''));
-            }else{
+            } else {
                 // 上传失败获取错误信息
                 return json(msg(-1, '', $file->getError()));
             }
@@ -127,21 +120,20 @@ class Articles extends Base
      * @param $id
      * @return array
      */
-    private function makeButton($id)
-    {
+    private function makeButton($id) {
         return [
             '编辑' => [
-                'auth' => 'articles/articleedit',
-                'href' => url('articles/articleedit', ['id' => $id]),
+                'auth'     => 'articles/articleedit',
+                'href'     => url('articles/articleedit', ['id' => $id]),
                 'btnStyle' => 'primary',
-                'icon' => 'fa fa-paste'
+                'icon'     => 'fa fa-paste',
             ],
             '删除' => [
-                'auth' => 'articles/articledel',
-                'href' => "javascript:articleDel(" . $id . ")",
+                'auth'     => 'articles/articledel',
+                'href'     => "javascript:articleDel(" . $id . ")",
                 'btnStyle' => 'danger',
-                'icon' => 'fa fa-trash-o'
-            ]
+                'icon'     => 'fa fa-trash-o',
+            ],
         ];
     }
 }

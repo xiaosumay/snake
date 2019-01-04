@@ -10,10 +10,10 @@
 // +----------------------------------------------------------------------
 namespace app\admin\model;
 
+use app\admin\validate\ArticleValidate;
 use think\Model;
 
-class ArticleModel extends Model
-{
+class ArticleModel extends Model {
     // 确定链接表名
     protected $name = 'articles';
 
@@ -27,8 +27,7 @@ class ArticleModel extends Model
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function getArticlesByWhere($where, $offset, $limit)
-    {
+    public function getArticlesByWhere($where, $offset, $limit) {
         return $this->where($where)->limit($offset, $limit)->order('id desc')->select();
     }
 
@@ -37,8 +36,7 @@ class ArticleModel extends Model
      * @param $where
      * @return float|string
      */
-    public function getAllArticles($where)
-    {
+    public function getAllArticles($where) {
         return $this->where($where)->count();
     }
 
@@ -47,17 +45,18 @@ class ArticleModel extends Model
      * @param $param
      * @return array
      */
-    public function addArticle($param)
-    {
+    public function addArticle($param) {
         try {
-            $result = $this->validate('ArticleValidate')->save($param);
-            if (false === $result) {
-                // 验证失败 输出错误信息
-                return msg(-1, '', $this->getError());
-            } else {
+            $validate = new ArticleValidate();
 
-                return msg(1, url('articles/index'), '添加文章成功');
+            if (false === $validate->check($param)) {
+                // 验证失败 输出错误信息
+                return msg(-1, '', $validate->getError());
             }
+
+            $this->save($param);
+            return msg(1, url('articles/index'), '添加文章成功');
+
         } catch (\Exception $e) {
             return msg(-2, '', $e->getMessage());
         }
@@ -68,19 +67,18 @@ class ArticleModel extends Model
      * @param $param
      * @return array
      */
-    public function editArticle($param)
-    {
+    public function editArticle($param) {
         try {
+            $validate = new ArticleValidate();
 
-            $result = $this->validate('ArticleValidate')->save($param, ['id' => $param['id']]);
-
-            if (false === $result) {
+            if (false === $validate->check($param)) {
                 // 验证失败 输出错误信息
-                return msg(-1, '', $this->getError());
-            } else {
-
-                return msg(1, url('articles/index'), '编辑文章成功');
+                return msg(-1, '', $validate->getError());
             }
+
+            $this->save($param, ['id' => $param['id']]);
+            return msg(1, url('articles/index'), '编辑文章成功');
+
         } catch (\Exception $e) {
             return msg(-2, '', $e->getMessage());
         }
@@ -94,8 +92,7 @@ class ArticleModel extends Model
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function getOneArticle($id)
-    {
+    public function getOneArticle($id) {
         return $this->where('id', $id)->find();
     }
 
@@ -104,8 +101,7 @@ class ArticleModel extends Model
      * @param $id
      * @return array
      */
-    public function delArticle($id)
-    {
+    public function delArticle($id) {
         try {
             $this->where('id', $id)->delete();
             return msg(1, '', '删除文章成功');

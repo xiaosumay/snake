@@ -35,7 +35,7 @@ class User extends Migrator
             ->addColumn('password', 'string', ['limit' => 255, 'null' => false, "default" => "", 'comment' => '密码'])
             ->addColumn('head', 'string', ['limit' => 255, 'null' => false, "default" => "", 'comment' => '头像'])
             ->addColumn('login_times', 'integer', ['limit' => 1, 'null' => false, "default" => "0", 'comment' => '登陆次数'])
-            ->addColumn('last_login_ip', 'string', ['limit' => 255, 'null' => false, 'comment' => '最后登录IP'])
+            ->addColumn('last_login_ip', 'string', ['limit' => 255, 'null' => false, "default" => "", 'comment' => '最后登录IP'])
             ->addColumn('last_login_time', 'integer', ['null' => false, "default" => '0', 'comment' => '最后登录时间'])
             ->addColumn('real_name', 'string', ['null' => false, 'comment' => '真实姓名'])
             ->addColumn('status', 'integer', ['limit' => 1, 'null' => false, "default" => "0", 'comment' => '状态'])
