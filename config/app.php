@@ -31,43 +31,43 @@ return [
     // 默认输出类型
     'default_return_type'    => 'html',
     // 默认AJAX 数据返回格式,可选json xml ...
-    'default_ajax_return'    => 'json',
+    'default_ajax_return'   => 'json',
     // 默认JSONP格式返回的处理方法
-    'default_jsonp_handler'  => 'jsonpReturn',
+    'default_jsonp_handler' => 'jsonpReturn',
     // 默认JSONP处理方法
-    'var_jsonp_handler'      => 'callback',
+    'var_jsonp_handler'     => 'callback',
     // 默认时区
-    'default_timezone'       => 'Asia/Shanghai',
+    'default_timezone'      => 'Asia/Shanghai',
     // 是否开启多语言
-    'lang_switch_on'         => false,
+    'lang_switch_on'        => false,
     // 默认全局过滤方法 用逗号分隔多个
-    'default_filter'         => '',
+    'default_filter'        => '',
     // 默认语言
-    'default_lang'           => 'zh-cn',
+    'default_lang'          => 'zh-cn',
     // 应用类库后缀
-    'class_suffix'           => false,
+    'class_suffix'          => false,
     // 控制器类后缀
-    'controller_suffix'      => false,
+    'controller_suffix'     => false,
 
     //加密串
-    'salt'                   => 'wZPb~yxvA!ir38&Z',
+    'salt'                  => env("salt", 'wZPb~yxvA!ir38&Z'),
     //备份数据地址
-    'back_path'              => env("root_path") . '/back/',
+    'back_path'             => env("root_path") . '/back/',
 
     // +----------------------------------------------------------------------
     // | 模块设置
     // +----------------------------------------------------------------------
 
     // 默认模块名
-    'default_module'         => 'admin',
+    'default_module'        => 'admin',
     // 禁止访问模块
-    'deny_module_list'       => ['common'],
+    'deny_module_list'      => ['common'],
     // 默认控制器名
-    'default_controller'     => 'Index',
+    'default_controller'    => 'Index',
     // 默认操作名
-    'default_action'         => 'index',
+    'default_action'        => 'index',
     // 默认验证器
-    'default_validate'       => '',
+    'default_validate'      => '',
     // 默认的空模块名
     'empty_module'           => '',
     // 默认的空控制器名
