@@ -136,7 +136,7 @@ class Node extends Seeder
                 "type_id"      => '1',
                 "style"        => '',
             ], [
-                'id'           => 6,
+                'id'           => 16,
                 "node_name"    => '添加节点',
                 "control_name" => 'node',
                 "action_name"  => 'nodeadd',

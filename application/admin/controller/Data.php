@@ -12,27 +12,25 @@ namespace app\admin\controller;
 
 use think\Db;
 
-class Data extends Base
-{
+class Data extends Base {
     // 备份首页列表
     /**
      * @return mixed
      */
-    public function index()
-    {
+    public function index() {
         $dbname = Db::getConfig('database');
 
         $tables = Db::query('show tables');
         foreach ($tables as $key => &$vo) {
-            $sql                  = "select count(0) as alls from " . $vo['Tables_in_' . $dbname];
-            $tables[$key]['alls'] = Db::query($sql)['0']['alls'];
+            $table = $vo['Tables_in_' . $dbname];
 
-            $table                   = $vo['Tables_in_' . $dbname];
+            $count = Db::table($table)->count();
+
+            $tables[$key]['alls']    = $count;
             $tables[$key]['operate'] = showOperate($this->makeButton($table));
 
-            if (file_exists(config('back_path') . $vo['Tables_in_' . $dbname] . ".sql")) {
-                $tables[$key]['ctime'] = date('Y-m-d H:i:s', filemtime(config('back_path') . $vo['Tables_in_' .
-                    $dbname] . ".sql"));
+            if (file_exists(config('back_path') . $table . ".sql")) {
+                $tables[$key]['ctime'] = date('Y-m-d H:i:s', filemtime(config('back_path') . $table . ".sql"));
             } else {
                 $tables[$key]['ctime'] = '无';
             }
@@ -51,8 +49,7 @@ class Data extends Base
      * @throws \think\db\exception\BindParamException
      * @throws \think\exception\PDOException
      */
-    public function importData()
-    {
+    public function importData() {
         set_time_limit(0);
         $table = addslashes(input('param.table'));
 
@@ -90,8 +87,7 @@ class Data extends Base
      * @throws \think\db\exception\BindParamException
      * @throws \think\exception\PDOException
      */
-    public function backData()
-    {
+    public function backData() {
         set_time_limit(0);
         $table = addslashes(input('param.table'));
 
@@ -115,8 +111,7 @@ class Data extends Base
      * @param $table
      * @return array
      */
-    private function makeButton($table)
-    {
+    private function makeButton($table) {
         return [
             '备份' => [
                 'auth'     => 'data/importdata',
