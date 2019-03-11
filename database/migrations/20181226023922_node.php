@@ -37,6 +37,7 @@ class Node extends Migrator
             ->addColumn('is_menu', 'integer', ['limit' => 1, 'null' => false, "default" => "1", 'comment' => '是否是菜单项 1不是 2是'])
             ->addColumn('type_id', 'integer', ['null' => false, 'comment' => '父级节点id'])
             ->addColumn('style', 'string', ['null' => false, 'comment' => '菜单样式'])
-            ->save();
+            ->create();
     }
 }
+ 

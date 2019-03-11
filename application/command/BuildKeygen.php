@@ -29,6 +29,7 @@ class BuildKeygen extends Command {
             $str = static::generateRandomString(15);
 
             $data = <<<EOF
+app_name=snake后台管理系统
 app_debug=true
 salt=$str
 
@@ -39,6 +40,7 @@ database=snake
 username=root
 password=root
 hostport=3306
+prefix=s_
 EOF;
             file_put_contents($envPath, $data);
             // 指令输出

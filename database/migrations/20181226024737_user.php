@@ -40,6 +40,6 @@ class User extends Migrator
             ->addColumn('real_name', 'string', ['null' => false, 'comment' => '真实姓名'])
             ->addColumn('status', 'integer', ['limit' => 1, 'null' => false, "default" => "0", 'comment' => '状态'])
             ->addColumn('role_id', 'integer', ['null' => false, "default" => "1", 'comment' => '用户角色id'])
-            ->save();
+            ->create();
     }
 }

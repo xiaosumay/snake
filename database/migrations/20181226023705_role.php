@@ -33,6 +33,6 @@ class Role extends Migrator
 
         $table->addColumn('role_name', 'string', ['limit' => 255, 'null' => false, 'comment' => '角色名称'])
             ->addColumn('rule', 'string', ['limit' => 255, 'null' => false, 'comment' => '权限节点数据'])
-            ->save();
+            ->create();
     }
 }

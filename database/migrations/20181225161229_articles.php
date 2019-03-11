@@ -39,6 +39,6 @@ class Articles extends Migrator
             ->addColumn('add_time', 'datetime', ['null' => false, 'comment' => '发布时间'])
             ->addIndex(['title'], ['unique' => false])
             ->addIndex(['keywords'], ['unique' => false])
-            ->save();
+            ->create();
     }
 }
