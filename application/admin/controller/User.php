@@ -34,7 +34,7 @@ class User extends Base
 
             $where = [];
             if (!empty($param['searchText'])) {
-                $where['user_name'] = ['like', '%' . $param['searchText'] . '%'];
+                $where[] = ['user_name', 'like', '%' . $param['searchText'] . '%'];
             }
             $user         = new UserModel();
             $selectResult = $user->getUsersByWhere($where, $offset, $limit);

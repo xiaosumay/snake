@@ -115,7 +115,7 @@ class Role extends Base
 
         $role = new RoleModel();
         $flag = $role->delRole($id);
-        $this->removRoleCache();
+        $this->removeRoleCache();
         return json(msg($flag['code'], $flag['data'], $flag['msg']));
     }
 
@@ -148,7 +148,7 @@ class Role extends Base
             $user    = new RoleModel();
             $flag    = $user->editAccess($doparam);
 
-            $this->removRoleCache();
+            $this->removeRoleCache();
             return json(msg($flag['code'], $flag['data'], $flag['msg']));
         }
     }

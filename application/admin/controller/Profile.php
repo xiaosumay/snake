@@ -104,7 +104,7 @@ class Profile extends Base
             $user_model = new UserModel();
             $flag       = $user_model->save($param, ['id' => session('id')]);
             if ($flag) {
-                $this->removRoleCache();
+                $this->removeRoleCache();
                 return json(msg(1, url('index/indexpage'), 'ok'));
             } else {
                 return json(msg(-1, '', '修改失败'));

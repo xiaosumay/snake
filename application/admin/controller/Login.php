@@ -29,6 +29,13 @@ class Login extends Controller
     }
 
     // 登录操作
+
+    /**
+     * @return \think\response\Json
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
     public function doLogin()
     {
         $userName = input("param.user_name");
@@ -82,6 +89,10 @@ class Login extends Controller
     }
 
     // 验证码
+
+    /**
+     * @return \think\Response
+     */
     public function checkVerify()
     {
         $verify = new Captcha();

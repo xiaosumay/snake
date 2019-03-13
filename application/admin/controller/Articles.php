@@ -32,7 +32,7 @@ class Articles extends Base {
 
         $where = [];
         if (!empty($param['searchText'])) {
-            $where['title'] = ['like', '%' . $param['searchText'] . '%'];
+            $where[] = ['title', 'like', '%' . $param['searchText'] . '%'];
         }
 
         $article      = new ArticleModel();

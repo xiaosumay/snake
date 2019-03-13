@@ -18,6 +18,9 @@ class Base extends Controller
 {
     /**
      * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
      */
     public function initialize()
     {
@@ -77,7 +80,7 @@ class Base extends Controller
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    protected function removRoleCache()
+    protected function removeRoleCache()
     {
         $roleModel = new RoleModel();
         $roleList = $roleModel->getRole();
