@@ -19,6 +19,7 @@ thinkphp5做的通用系统改后台
 # 更新日志：  
 ### 2019.01.04
 1. 开始操作 `php think keygen`
+2. 修改数据库配置参数
 2. 生成表 `php think  migrate:run`
 3. 生成默认数据 `php think seed:run`
 
