@@ -15,11 +15,11 @@
 
 return [
     // 应用名称
-    'app_name'               => 'snake后台管理系统',
+    'app_name'               => env('app_name', 'snake后台管理系统'),
     // 应用地址
-    'app_host'               => '',
+    'app_host'               => env('app_host', ''),
     // 应用调试模式
-    'app_debug'              => false,
+    'app_debug'              => env('app_debug', false),
     // 应用Trace
     'app_trace'              => false,
     // 是否支持多模块
@@ -52,7 +52,7 @@ return [
     //加密串
     'salt'                  => env("salt", 'wZPb~yxvA!ir38&Z'),
     //备份数据地址
-    'back_path'             => env("root_path") . '/back/',
+    'back_path'             => env("root_path") . 'back/',
 
     // +----------------------------------------------------------------------
     // | 模块设置
