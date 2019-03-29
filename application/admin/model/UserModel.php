@@ -152,7 +152,8 @@ class UserModel extends Model {
      * @throws \think\exception\DbException
      */
     public function checkUser($userName) {
-        return $this->alias('u')->join('role r', 'u.role_id = r.id')
+        return $this->alias('u')->field('u.id as user_id,u.*,r.*')
+            ->join('role r', 'u.role_id = r.id')
             ->where('u.user_name', $userName)
             ->find();
     }

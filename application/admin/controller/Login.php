@@ -67,7 +67,7 @@ class Login extends Controller
         }
 
         session('username', $hasUser['user_name']);
-        session('id', $hasUser['id']);
+        session('id', $hasUser['user_id']);
         session('head', $hasUser['head']);
         session('role', $hasUser['role_name']);  // 角色名
         session('role_id', $hasUser['role_id']);
