@@ -22,6 +22,10 @@ class BuildKeygen extends Command {
         return $randomString;
     }
 
+    /**
+     * @param Input $input
+     * @param Output $output
+     */
     protected function execute(Input $input, Output $output) {
         $envPath = env('root_path') . ".env";
 

@@ -14,6 +14,8 @@ use app\admin\model\NodeModel;
 
 class Index extends Base
 {
+    protected $middleware = ['Auth'];
+
     /**
      * @return mixed
      * @throws \think\db\exception\DataNotFoundException

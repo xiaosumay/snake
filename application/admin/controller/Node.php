@@ -14,7 +14,10 @@ use app\admin\model\NodeModel;
 
 class Node extends Base
 {
+    protected $middleware = ['Auth'];
+
     // 节点列表
+
     /**
      * @return mixed|\think\response\Json
      * @throws \think\db\exception\DataNotFoundException
@@ -25,7 +28,7 @@ class Node extends Base
     {
         if (request()->isAjax()) {
 
-            $node  = new NodeModel();
+            $node = new NodeModel();
             $nodes = $node->getNodeList();
 
             $nodes = getTree(objToArray($nodes), false);

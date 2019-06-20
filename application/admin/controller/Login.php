@@ -84,7 +84,7 @@ class Login extends Controller
         if (1 != $res['code']) {
             return json(msg(-6, '', $res['msg']));
         }
-        // ['code' => 1, 'data' => url('index/index'), 'msg' => '登录成功']
+
         return json(msg(1, url('index/index'), '登录成功'));
     }
 

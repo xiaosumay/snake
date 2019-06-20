@@ -15,7 +15,10 @@ use app\admin\model\RoleModel;
 
 class Role extends Base
 {
+    protected $middleware = ['Auth'];
+
     // 角色列表
+
     /**
      * @return mixed|\think\response\Json
      * @throws \think\db\exception\DataNotFoundException
@@ -28,7 +31,7 @@ class Role extends Base
 
             $param = input('param.');
 
-            $limit  = $param['pageSize'];
+            $limit = $param['pageSize'];
             $offset = ($param['pageNumber'] - 1) * $limit;
 
             $where = [];
@@ -36,7 +39,7 @@ class Role extends Base
                 $where['role_name'] = ['like', '%' . $param['searchText'] . '%'];
             }
 
-            $user         = new RoleModel();
+            $user = new RoleModel();
             $selectResult = $user->getRoleByWhere($where, $offset, $limit);
 
             foreach ($selectResult as $key => $vo) {
@@ -51,7 +54,7 @@ class Role extends Base
             }
 
             $return['total'] = $user->getAllRole($where);  // 总数据
-            $return['rows']  = $selectResult;
+            $return['rows'] = $selectResult;
 
             return json($return);
         }
@@ -89,7 +92,7 @@ class Role extends Base
         if (request()->isPost()) {
 
             $param = input('post.');
-            $flag  = $role->editRole($param);
+            $flag = $role->editRole($param);
 
             return json(msg($flag['code'], $flag['data'], $flag['msg']));
         }
@@ -130,7 +133,7 @@ class Role extends Base
     public function giveAccess()
     {
         $param = input('param.');
-        $node  = new NodeModel();
+        $node = new NodeModel();
         // 获取现在的权限
         if ('get' == $param['type']) {
 
@@ -142,11 +145,11 @@ class Role extends Base
         if ('give' == $param['type']) {
 
             $doparam = [
-                'id'   => $param['id'],
+                'id' => $param['id'],
                 'rule' => $param['rule'],
             ];
-            $user    = new RoleModel();
-            $flag    = $user->editAccess($doparam);
+            $user = new RoleModel();
+            $flag = $user->editAccess($doparam);
 
             $this->removeRoleCache();
             return json(msg($flag['code'], $flag['data'], $flag['msg']));
@@ -161,23 +164,23 @@ class Role extends Base
     private function makeButton($id)
     {
         return [
-            '编辑'   => [
-                'auth'     => 'role/roleedit',
-                'href'     => url('role/roleEdit', ['id' => $id]),
+            '编辑' => [
+                'auth' => 'role/roleedit',
+                'href' => url('role/roleEdit', ['id' => $id]),
                 'btnStyle' => 'primary',
-                'icon'     => 'fa fa-paste',
+                'icon' => 'fa fa-paste',
             ],
-            '删除'   => [
-                'auth'     => 'role/roledel',
-                'href'     => "javascript:roleDel(" . $id . ")",
+            '删除' => [
+                'auth' => 'role/roledel',
+                'href' => "javascript:roleDel(" . $id . ")",
                 'btnStyle' => 'danger',
-                'icon'     => 'fa fa-trash-o',
+                'icon' => 'fa fa-trash-o',
             ],
             '分配权限' => [
-                'auth'     => 'role/giveaccess',
-                'href'     => "javascript:giveQx(" . $id . ")",
+                'auth' => 'role/giveaccess',
+                'href' => "javascript:giveQx(" . $id . ")",
                 'btnStyle' => 'info',
-                'icon'     => 'fa fa-institution',
+                'icon' => 'fa fa-institution',
             ],
         ];
     }

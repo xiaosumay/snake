@@ -11,13 +11,20 @@
 namespace app\admin\controller;
 
 use think\Db;
+use ext\Status;
+use think\db\exception\BindParamException;
+use think\exception\PDOException;
+use think\response\Json;
 
-class Data extends Base {
-    // 备份首页列表
+class Data extends Base
+{
+    protected $middleware = ['Auth'];
+
     /**
      * @return mixed
      */
-    public function index() {
+    public function index()
+    {
         $dbname = Db::getConfig('database');
 
         $tables = Db::query('show tables');
@@ -26,7 +33,7 @@ class Data extends Base {
 
             $count = Db::table($table)->count();
 
-            $tables[$key]['alls']    = $count;
+            $tables[$key]['alls'] = $count;
             $tables[$key]['operate'] = showOperate($this->makeButton($table));
 
             if (file_exists(config('back_path') . $table . ".sql")) {
@@ -45,35 +52,36 @@ class Data extends Base {
     // 备份数据
 
     /**
-     * @return \think\response\Json
-     * @throws \think\db\exception\BindParamException
-     * @throws \think\exception\PDOException
+     * @return Json
+     * @throws BindParamException
+     * @throws PDOException
      */
-    public function importData() {
+    public function importData()
+    {
         set_time_limit(0);
         $table = addslashes(input('param.table'));
 
         $sqlStr = "SET FOREIGN_KEY_CHECKS=0;\r\n";
         $sqlStr .= "DROP TABLE IF EXISTS `$table`;\r\n";
-        $create = db()->query('show create table ' . $table);
+        $create = db()->query("show create table `$table`");
         $sqlStr .= $create['0']['Create Table'] . ";\r\n";
         $sqlStr .= "\r\n";
 
-        $result = db()->query('select * from ' . $table);
+        $result = db()->query("select * from `$table`");
         foreach ($result as $key => $vo) {
-            $keys   = array_keys($vo);
-            $keys   = array_map('addslashes', $keys);
-            $keys   = join('`,`', $keys);
-            $keys   = "`" . $keys . "`";
-            $vals   = array_values($vo);
-            $vals   = array_map('addslashes', $vals);
-            $vals   = join("','", $vals);
-            $vals   = "'" . $vals . "'";
+            $keys = array_keys($vo);
+            $keys = array_map('addslashes', $keys);
+            $keys = join('`,`', $keys);
+            $keys = "`" . $keys . "`";
+            $vals = array_values($vo);
+            $vals = array_map('addslashes', $vals);
+            $vals = join("','", $vals);
+            $vals = "'" . $vals . "'";
             $sqlStr .= "insert into `$table`($keys) values($vals);\r\n";
         }
 
         $filename = config('back_path') . $table . ".sql";
-        $fp       = fopen($filename, 'w');
+        $fp = fopen($filename, 'w');
         fputs($fp, $sqlStr);
         fclose($fp);
 
@@ -83,11 +91,12 @@ class Data extends Base {
     // 还原数据
 
     /**
-     * @return \think\response\Json
-     * @throws \think\db\exception\BindParamException
-     * @throws \think\exception\PDOException
+     * @return Json
+     * @throws BindParamException
+     * @throws PDOException
      */
-    public function backData() {
+    public function backData()
+    {
         set_time_limit(0);
         $table = addslashes(input('param.table'));
 
@@ -111,19 +120,20 @@ class Data extends Base {
      * @param $table
      * @return array
      */
-    private function makeButton($table) {
+    private function makeButton($table)
+    {
         return [
             '备份' => [
-                'auth'     => 'data/importdata',
-                'href'     => "javascript:importData('" . $table . "')",
+                'auth' => 'data/importdata',
+                'href' => "javascript:importData('" . $table . "')",
                 'btnStyle' => 'primary',
-                'icon'     => 'fa fa-tasks',
+                'icon' => 'fa fa-tasks',
             ],
             '还原' => [
-                'auth'     => 'data/backdata',
-                'href'     => "javascript:backData('" . $table . "')",
+                'auth' => 'data/backdata',
+                'href' => "javascript:backData('" . $table . "')",
                 'btnStyle' => 'info',
-                'icon'     => 'fa fa-retweet',
+                'icon' => 'fa fa-retweet',
             ],
         ];
     }

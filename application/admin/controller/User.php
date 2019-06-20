@@ -16,7 +16,10 @@ use app\admin\model\UserModel;
 
 class User extends Base
 {
+    protected $middleware = ['Auth'];
+
     //用户列表
+
     /**
      * @return mixed|\think\response\Json
      * @throws \think\db\exception\DataNotFoundException
@@ -29,14 +32,14 @@ class User extends Base
 
             $param = input('param.');
 
-            $limit  = $param['pageSize'];
+            $limit = $param['pageSize'];
             $offset = ($param['pageNumber'] - 1) * $limit;
 
             $where = [];
             if (!empty($param['searchText'])) {
                 $where[] = ['user_name', 'like', '%' . $param['searchText'] . '%'];
             }
-            $user         = new UserModel();
+            $user = new UserModel();
             $selectResult = $user->getUsersByWhere($where, $offset, $limit);
 
             $status = config('user_status');
@@ -45,7 +48,7 @@ class User extends Base
             foreach ($selectResult as $key => $vo) {
 
                 $selectResult[$key]['last_login_time'] = date('Y-m-d H:i:s', $vo['last_login_time']);
-                $selectResult[$key]['status']          = $status[$vo['status']];
+                $selectResult[$key]['status'] = $status[$vo['status']];
 
                 if (1 == $vo['id']) {
                     $selectResult[$key]['operate'] = '';
@@ -55,7 +58,7 @@ class User extends Base
             }
 
             $return['total'] = $user->getAllUsers($where);  //总数据
-            $return['rows']  = $selectResult;
+            $return['rows'] = $selectResult;
 
             return json($return);
         }
@@ -78,7 +81,7 @@ class User extends Base
             $param = input('post.');
 
             $param['password'] = md5($param['password'] . config('salt'));
-            $param['head']     = '/static/admin/images/profile_small.jpg'; // 默认头像
+            $param['head'] = '/static/admin/images/profile_small.jpg'; // 默认头像
 
             $user = new UserModel();
             $flag = $user->insertUser($param);
@@ -88,7 +91,7 @@ class User extends Base
 
         $role = new RoleModel();
         $this->assign([
-            'role'   => $role->getRole(),
+            'role' => $role->getRole(),
             'status' => config('user_status'),
         ]);
 
@@ -121,13 +124,13 @@ class User extends Base
             return json(msg($flag['code'], $flag['data'], $flag['msg']));
         }
 
-        $id   = input('param.id');
+        $id = input('param.id');
         $role = new RoleModel();
 
         $this->assign([
-            'user'   => $user->getOneUser($id),
+            'user' => $user->getOneUser($id),
             'status' => config('user_status'),
-            'role'   => $role->getRole(),
+            'role' => $role->getRole(),
         ]);
         return $this->fetch();
     }
@@ -151,16 +154,16 @@ class User extends Base
     {
         return [
             '编辑' => [
-                'auth'     => 'user/useredit',
-                'href'     => url('user/userEdit', ['id' => $id]),
+                'auth' => 'user/useredit',
+                'href' => url('user/userEdit', ['id' => $id]),
                 'btnStyle' => 'primary',
-                'icon'     => 'fa fa-paste',
+                'icon' => 'fa fa-paste',
             ],
             '删除' => [
-                'auth'     => 'user/userdel',
-                'href'     => "javascript:userDel(" . $id . ")",
+                'auth' => 'user/userdel',
+                'href' => "javascript:userDel(" . $id . ")",
                 'btnStyle' => 'danger',
-                'icon'     => 'fa fa-trash-o',
+                'icon' => 'fa fa-trash-o',
             ],
         ];
     }

@@ -159,38 +159,6 @@ class Node extends Seeder
                 "is_menu"      => '1',
                 "type_id"      => '15',
                 "style"        => '',
-            ], [
-                'id'           => 19,
-                "node_name"    => '个人中心',
-                "control_name" => '#',
-                "action_name"  => '#',
-                "is_menu"      => '1',
-                "type_id"      => '0',
-                "style"        => '',
-            ], [
-                'id'           => 20,
-                "node_name"    => '编辑信息',
-                "control_name" => 'profile',
-                "action_name"  => 'index',
-                "is_menu"      => '1',
-                "type_id"      => '19',
-                "style"        => '',
-            ], [
-                'id'           => 21,
-                "node_name"    => '编辑头像',
-                "control_name" => 'profile',
-                "action_name"  => 'headedit',
-                "is_menu"      => '1',
-                "type_id"      => '19',
-                "style"        => '',
-            ], [
-                'id'           => 22,
-                "node_name"    => '上传头像',
-                "control_name" => 'profile',
-                "action_name"  => 'uploadheade',
-                "is_menu"      => '1',
-                "type_id"      => '19',
-                "style"        => '',
             ],
         ];
 
